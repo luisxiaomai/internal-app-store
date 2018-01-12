@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>App Store Admin</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename = 'favicon.png') }}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/custom.css">
+    <script defer src="/static/js/fontawesome-all.min.js"></script>
+
+</head>
+
+<body>
+    <div class="admin container">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col col-xs-6">
+                        <h5>Mobile App Project</h5>
+                    </div>
+                    <div class="col col-xs-6 text-right">
+                        <button id ="createProject" class="btn btn-sm btn-primary createApp" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="far fa-plus-square fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Name</th>
+                            <th>Version</th>
+                            <th>Descirption</th>
+                            <th>Jenkins Url</th>
+                            <th>
+                                <em class="fa fa-cog"></em>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        {% for project in projectList %}
+                        <tr>
+                            <td class="hidden-xs">{{project.name}}</td>
+                            <td>{{project.version}}</td>
+                            <td>{{project.descriptin}}</td>
+                            <td>{{project.jenkins_url}}</td>
+                            <td>
+                                <i class="far fa-edit"></i>
+                                <i class="far fa-trash-alt" data-toggle="modal" data-target="#deleteModal"></i>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="create modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                   
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal-delete -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  Are you sure to delete it?
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                  <button type="button" class="btn btn-primary">Yes</button>
+                                </div>
+                              </div>
+                </div>
+            </div>
+
+    </div>
+
+    <script src="static/js/jquery-3.2.1.min.js"></script>
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script>
+ $(document).ready(function() {
+	
+    // add step button opens modal containing step form loaded via ajax
+    $('#createProject').click(function() {
+      var url = "{{ url_for('main.createProject') }}";
+      $.get(url, function(data) {
+        $('.create.modal').find(".modal-content").html(data);
+        $('.create.modal').modal();
+
+      });
+    });
+    
+    $('.create.modal').on('shown.bs.modal', function (e) {
+        
+        $('#createSubmit').click(function(event) {
+          var url = "{{ url_for('main.createProject') }}";
+
+          event.preventDefault();
+          $.post(url, data=$('#project').serialize(), function(data) {
+            if (data.status == 'ok') {
+              $('.create.modal').modal('hide');
+              location.reload();
+            }
+            else {
+                $('.create.modal').find(".modal-content").html(data);
+            }
+          });
+        });
+
+    });
+
+});
+       
+    </script> 
+
+</body>
+
+</html>
