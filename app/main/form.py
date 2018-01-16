@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,TextAreaField,SubmitField
+from wtforms import StringField,TextAreaField
 from wtforms.validators import DataRequired
 from ..models import Project
 
@@ -10,10 +10,8 @@ class ProjectForm(FlaskForm):
     android_jenkins_url = StringField("Android Jenkins Url")
     ios_jenkins_url = StringField("iOS Jenkins Url")
 
-
     def validate(self):
         rv = FlaskForm.validate(self)
-        print("xxxx")
         if not rv:
             return False
         project = Project.query.filter_by(name=self.name.data,version=self.version.data).first()

@@ -20,19 +20,19 @@
                 <cite title="Source Title">Download/Install android and iOS app in your mobile device</cite>
             </footer>
         </blockquote>
-        {% for appSectin in appList %}
+        {% for projectSection in projectList %}
         <div class="card text-white bg-dark mb-3">
-            <div class="card-header text-center">App name version</div>
+            <div class="card-header text-center">{{projectSection.name}}-{{projectSection.version}}</div>
             <div class="card-body">
                 <img class="app-icon img-thumbnail rounded float-left mr-3" src="static/images/app-icon.png" alt="Card image cap">
-                <h5 class="card-title">App Descirption...</h5>
+                <h5 class="card-title">{{projectSection.description}}</h5>
                 <p class="card-text">Last updated time</p>
                 {% if showLink["showIpaLink"] %}
-                <a href="{{url_for('main.download',filename='anwstream.ipa')}}" class="iOS btn btn-primary float-right ml-1 btn-sm">ipa</a>
+                <a href="{{url_for('main.download',projectID=projectSection.id,type='ipa')}}" class="iOS btn btn-primary float-right ml-1 btn-sm">ipa</a>
                 {% endif%} {% if showLink["showiOSLink"] %}
-                <a href="#" class="ipa btn btn-primary float-right ml-1 btn-sm">iOS</a>
+                <a href="{{url_for('main.download',projectID=projectSection.id,type='iOS')}}" class="ipa btn btn-primary float-right ml-1 btn-sm">iOS</a>
                 {% endif%} {% if showLink["showAndroidLink"] %}
-                <a href="{{url_for('main.download',filename='streamAndroid.apk')}}" class="android btn btn-primary float-right ml-1 btn-sm">Android</a>
+                <a href="{{url_for('main.download',projectID=projectSection.id,type='apk')}}" class="android btn btn-primary float-right ml-1 btn-sm">Android</a>
                 {% endif%}
 
             </div>

@@ -3,7 +3,11 @@
 # Python:
 *.pyc
 venv
-
+store/*/*.apk
+store/*/*.ipa
+store/*/*.plist
+store/*.js
+store/*.plist
 # My configurations:
 .vscode
 __pycache__

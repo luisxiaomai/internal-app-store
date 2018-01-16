@@ -5,6 +5,8 @@ from .. import db
 from . import main
 import os
 from time import sleep
+import shutil
+import glob
 
 @main.route("/", methods=["GET","POST"])
 def index():
@@ -16,13 +18,12 @@ def index():
     elif "Android" in userAgent:
         showLink["showIpaLink"] = False
         showLink["showiOSLink"] = False
-    appList = [1,2,3]
-    return render_template('index.html', appList=appList, showLink=showLink)
+    projectList = Project.query.all()
+    return render_template('index.html', projectList=projectList, showLink=showLink)
 
 @main.route("/admin", methods=["GET","POST"])
 def admin():
     form = ProjectForm()
-    
     projectList = Project.query.all()
     return render_template("admin.html",projectList=projectList)
 
@@ -40,8 +41,15 @@ def createProject():
             project.description = form.description.data
             project.android_jenkins_url = form.android_jenkins_url.data
             project.ios_jenkins_url = form.ios_jenkins_url.data
-
         db.session.add(project)
+        #create related folder
+        try:
+            folderName = "%s-%s"%(form.name.data,form.version.data)
+            directory =os.path.join(os.path.join(os.getcwd(),"store") ,folderName) 
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+        except OSError:
+            print ('Error: Creating directory. ' +  directory)
         return jsonify(status='ok')
     if len(request.args)!=0:
         project = Project.query.get_or_404(request.args.get("id"))
@@ -60,9 +68,32 @@ def deleteProject():
         print(request.args.get("id"))
         project = Project.query.get_or_404(int(request.form["id"]))
         db.session.delete(project)
+        #delete related folder
+        folderName = "%s-%s"%(project.name,project.version)
+        directory =os.path.join(os.path.join(os.getcwd(),"store") ,folderName) 
+        shutil.rmtree(directory)
         return jsonify(status='ok')
 
-@main.route("/download/<filename>", methods=["GET","POST"])
-def download(filename):
-    directory =os.path.join(os.getcwd(),"store") 
+@main.route("/download", methods=["GET","POST"])
+def download():
+    project = Project.query.get_or_404(request.args.get("projectID"))
+    folderName = "%s-%s"%(project.name,project.version)
+    directory =os.path.join(os.path.join(os.getcwd(),"store") ,folderName) 
+    type = request.args.get("type")
+    for file in os.listdir(directory):
+        if file.endswith(".ipa") and type == "ipa":
+            filename = file
+            break
+        elif file.endswith(".apk") and type == "apk":
+            filename = file
+            break
+        elif type == "iOS":
+            return "itms-services://?action=download-manifest&url=http://xxx"
+        else:
+            filename = None
     return send_from_directory(directory, filename, as_attachment=True)
+
+@main.route("/sync", methods=["GET","POST"])
+def sync():
+    sleep(10)
+    return jsonify(status='ok')

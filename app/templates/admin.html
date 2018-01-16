@@ -53,12 +53,16 @@
                             <td>{{project.ios_jenkins_url}}</td>
                             
                             <td>
-                                <a class="editProject" data-id="{{project.id}}" ,data-toggle="modal" data-target="#createModal">
-                                    <i class="far fa-edit"></i>
+                                <a class="editProject"  data-toggle="tooltip" data-placement="bottom" title="edit" data-id="{{project.id}}">
+                                    <i class="far fa-edit" ></i>
                                 </a>
-                                <a class="deleteProject" data-id="{{project.id}}" data-name="{{project.name}}" data-version="{{project.version}}" data-toggle="modal"
-                                    data-target="#deleteModal">
-                                    <i class="far fa-trash-alt"></i>
+                                <span data-toggle="modal" data-target="#deleteModal"  data-id="{{project.id}}" data-name="{{project.name}}" data-version="{{project.version}}">
+                                    <a class="deleteProject" data-toggle="tooltip" data-placement="bottom" title="delete" >
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
+                                </span>
+                                <a class="sync" data-toggle="tooltip" data-placement="bottom" title="sync">
+                                    <i class="far fa-play-circle"></i>
                                 </a>
                             </td>
                         </tr>
@@ -129,7 +133,7 @@
             var modal = $(this);
             modal.find('.modal-body').text('Are you sure to delete project ' + name + " " + version + "?")
             modal.find(".yes.btn").data("id", id);
-            $(".yes.btn").on("click", function (data) {
+            $(".yes.btn").on("click", function() {
                 var projectID = $(this).data('id');
                 var url = "{{url_for('main.deleteProject')}}";
                 $.post(url, data = { id: projectID }, function (data) {
@@ -143,20 +147,18 @@
 
         });
 
-         $(".create.modal").on("shown.bs.modal", function (event) {
+        $(".create.modal").on("shown.bs.modal", function (event) {
               $('[data-toggle="tooltip"]').tooltip();
         });
 
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
-            // add step button opens modal containing step form loaded via ajax
             $('#createProject').click(function () {
                 var url = "{{ url_for('main.createProject') }}";
                 $.get(url, function (data) {
                     $('.create.modal').find(".modal-content").html(data);
                     $('.create.modal').modal();
-
                 });
             });
 
@@ -172,7 +174,16 @@
                 });
             });
 
+            $(".sync").on("click",function(){
+                var url = "{{url_for('main.sync')}}";
+                $.get(url,function(data){
+                    if (data.status == 'ok') {
+                        alert("test");
+                    };
 
+                });
+
+            });
 
         });
     </script>
