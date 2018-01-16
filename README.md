@@ -1,2 +1,2 @@
 # internal-app-store
-This central internal will automatically sync latest different version of your apps from your internal jenkins server and help internal stackholders like PM, QA, Dev to download/install mobiel apps eaisily.
+This internal app store will automatically sync latest different version of your apps from your internal jenkins server and provide a central store to internal stackholders like PM, QA, Dev help help them download/install mobiel apps easily.
