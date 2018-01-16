@@ -1,8 +1,8 @@
-"""create project table
+"""update table
 
-Revision ID: ea01eff400b0
+Revision ID: 8306a6c493d2
 Revises: 
-Create Date: 2018-01-11 15:58:04.301501
+Create Date: 2018-01-15 15:51:52.670011
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ea01eff400b0'
+revision = '8306a6c493d2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,9 +23,9 @@ def upgrade():
     sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('version', sa.String(length=64), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('jenkins_url', sa.String(length=64), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('version')
+    sa.Column('android_jenkins_url', sa.String(length=64), nullable=True),
+    sa.Column('ios_jenkins_url', sa.String(length=64), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

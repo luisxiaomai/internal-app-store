@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +23,7 @@
                         <h5>Mobile App Project</h5>
                     </div>
                     <div class="col col-xs-6 text-right">
-                        <button id ="createProject" class="btn btn-sm btn-primary createApp" data-toggle="modal" data-target="#exampleModalCenter">
+                        <button id="createProject" class="btn btn-sm btn-primary createApp" data-toggle="modal" data-target="#exampleModalCenter">
                             <i class="far fa-plus-square fa-lg"></i>
                         </button>
                     </div>
@@ -37,7 +36,8 @@
                             <th>Name</th>
                             <th>Version</th>
                             <th>Descirption</th>
-                            <th>Jenkins Url</th>
+                            <th>Android Jenkins Url</th>
+                            <th>iOS Jenkins Url</th>         
                             <th>
                                 <em class="fa fa-cog"></em>
                             </th>
@@ -48,11 +48,18 @@
                         <tr>
                             <td class="hidden-xs">{{project.name}}</td>
                             <td>{{project.version}}</td>
-                            <td>{{project.descriptin}}</td>
-                            <td>{{project.jenkins_url}}</td>
+                            <td>{{project.description}}</td>
+                            <td>{{project.android_jenkins_url}}</td>
+                            <td>{{project.ios_jenkins_url}}</td>
+                            
                             <td>
-                                <i class="far fa-edit"></i>
-                                <i class="far fa-trash-alt" data-toggle="modal" data-target="#deleteModal"></i>
+                                <a class="editProject" data-id="{{project.id}}" ,data-toggle="modal" data-target="#createModal">
+                                    <i class="far fa-edit"></i>
+                                </a>
+                                <a class="deleteProject" data-id="{{project.id}}" data-name="{{project.name}}" data-version="{{project.version}}" data-toggle="modal"
+                                    data-target="#deleteModal">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -61,36 +68,37 @@
                 </table>
             </div>
         </div>
-        <!-- Modal -->
-        <div class="create modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+
+        <!-- Modal-create -->
+        <div class="create modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                   
+
 
                 </div>
             </div>
         </div>
 
         <!-- Modal-delete -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="delete modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
-                                </div>
-                                <div class="modal-body">
-                                  Are you sure to delete it?
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                  <button type="button" class="btn btn-primary">Yes</button>
-                                </div>
-                              </div>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button type="button" class="yes btn btn-primary" data-id="">Yes</button>
+                    </div>
                 </div>
             </div>
+        </div>
 
     </div>
 
@@ -98,40 +106,76 @@
     <script src="static/js/popper.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script>
- $(document).ready(function() {
-	
-    // add step button opens modal containing step form loaded via ajax
-    $('#createProject').click(function() {
-      var url = "{{ url_for('main.createProject') }}";
-      $.get(url, function(data) {
-        $('.create.modal').find(".modal-content").html(data);
-        $('.create.modal').modal();
+        function check(id) {
+            var url = "{{ url_for('main.createProject') }}";
+            $.post(url, data = $('#project').serialize() + "&id=" + id, function (data) {
+                if (data.status == 'ok') {
+                    $('.create.modal').modal('hide');
+                    location.href = "{{ url_for('main.admin') }}";
+                }
+                else {
+                    $('.create.modal').find(".modal-content").html(data);
 
-      });
-    });
-    
-    $('.create.modal').on('shown.bs.modal', function (e) {
-        
-        $('#createSubmit').click(function(event) {
-          var url = "{{ url_for('main.createProject') }}";
+                }
+            });
+        };
 
-          event.preventDefault();
-          $.post(url, data=$('#project').serialize(), function(data) {
-            if (data.status == 'ok') {
-              $('.create.modal').modal('hide');
-              location.reload();
-            }
-            else {
-                $('.create.modal').find(".modal-content").html(data);
-            }
-          });
+        $(".delete.modal").on("show.bs.modal", function (event) {
+            var delButton = $(event.relatedTarget);
+            id = delButton.data("id");
+            name = delButton.data("name");
+            version = delButton.data("version");
+            delButton.data("id");
+            var modal = $(this);
+            modal.find('.modal-body').text('Are you sure to delete project ' + name + " " + version + "?")
+            modal.find(".yes.btn").data("id", id);
+            $(".yes.btn").on("click", function (data) {
+                var projectID = $(this).data('id');
+                var url = "{{url_for('main.deleteProject')}}";
+                $.post(url, data = { id: projectID }, function (data) {
+                    if (data.status == 'ok') {
+                        $("delete.modal").modal("hide");
+                        location.href = "{{ url_for('main.admin') }}";
+                    };
+                });
+
+            });
+
         });
 
-    });
+         $(".create.modal").on("shown.bs.modal", function (event) {
+              $('[data-toggle="tooltip"]').tooltip();
+        });
 
-});
-       
-    </script> 
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // add step button opens modal containing step form loaded via ajax
+            $('#createProject').click(function () {
+                var url = "{{ url_for('main.createProject') }}";
+                $.get(url, function (data) {
+                    $('.create.modal').find(".modal-content").html(data);
+                    $('.create.modal').modal();
+
+                });
+            });
+
+            $(".editProject").each(function () {
+                $(this).on('click', function () {
+                    project_id = $(this).attr("data-id");
+                    var url = "{{ url_for('main.createProject') }}";
+                    $.get(url, { "id": project_id }, function (data) {
+                        $('.create.modal').find(".modal-content").html(data);
+                        $('.create.modal').modal();
+
+                    });
+                });
+            });
+
+
+
+        });
+    </script>
 
 </body>
 

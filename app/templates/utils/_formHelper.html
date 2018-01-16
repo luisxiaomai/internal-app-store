@@ -1,10 +1,14 @@
 {% macro render_field(field) %}
     <div class="form-group">
         <label class="col-form-label">{{field.label}}</label>
-        {% if field.errors %}
+       {% if kwargs.get('tooltip',None) %}
+            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="{{kwargs.get('tooltip',None)}}" aria-hidden="true"></i>
+       {% endif %}
+       {% if field.errors %}
             {{field(class="form-control is-invalid",**kwargs)}}
         {% else %}
             {{field(class="form-control",**kwargs)}}
+
         {% endif %}
         <div class="invalid-feedback">
             {{field.errors[0]}}
