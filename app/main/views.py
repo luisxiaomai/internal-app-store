@@ -1,4 +1,4 @@
-from flask import render_template, send_from_directory, request, jsonify, redirect, url_for
+from flask import render_template, send_from_directory, request, jsonify, redirect, url_for, make_response, send_file
 from .form import ProjectForm
 from ..models import Project
 from .. import db
@@ -27,9 +27,17 @@ def admin():
     projectList = Project.query.all()
     return render_template("admin.html",projectList=projectList)
 
+@main.route("/test", methods=["GET","POST"])
+def test():
+    form = ProjectForm()
+    projectList = Project.query.all()
+    return render_template("test.html",projectList=projectList)
+
 @main.route("/createProject", methods=["GET","POST"])
 def createProject():
     form = ProjectForm()
+    print(request.form.get("id",0))
+    form.getProjectID(request.form.get("id",0))
     if form.validate_on_submit():
         id = int(request.form["id"]) 
         if id==0:
@@ -51,8 +59,9 @@ def createProject():
         except OSError:
             print ('Error: Creating directory. ' +  directory)
         return jsonify(status='ok')
-    if len(request.args)!=0:
-        project = Project.query.get_or_404(request.args.get("id"))
+    if int(request.args.get("id",0)) != 0 or int(request.form.get("id",0)) != 0:
+        projectID = request.args.get("id",0) if  request.args.get("id",0) else request.form.get("id",0)
+        project = Project.query.get_or_404(int(projectID))
         form.name.data = project.name
         form.version.data = project.version
         form.description.data = project.description
@@ -88,12 +97,20 @@ def download():
             filename = file
             break
         elif type == "iOS":
-            return "itms-services://?action=download-manifest&url=http://xxx"
+            return "itms-services://?action=download-manifest&url=https://github.com/luisxiaomai/Images/blob/master/Internal-App-Store/anwstream.plist"
         else:
             filename = None
     return send_from_directory(directory, filename, as_attachment=True)
 
 @main.route("/sync", methods=["GET","POST"])
 def sync():
+    print("1111")
     sleep(10)
+    print("22222")
     return jsonify(status='ok')
+
+@main.route("/getIPA", methods=["GET","POST"])
+def getIPA():
+    response = make_response(send_file("anwstream.ipa"))
+    response.headers["Content-Disposition"] = "attachment;filename=anwstream.ipa;"
+    return response

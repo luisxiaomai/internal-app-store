@@ -30,7 +30,7 @@
                 {% if showLink["showIpaLink"] %}
                 <a href="{{url_for('main.download',projectID=projectSection.id,type='ipa')}}" class="iOS btn btn-primary float-right ml-1 btn-sm">ipa</a>
                 {% endif%} {% if showLink["showiOSLink"] %}
-                <a href="{{url_for('main.download',projectID=projectSection.id,type='iOS')}}" class="ipa btn btn-primary float-right ml-1 btn-sm">iOS</a>
+                <a href='itms-services://?action=download-manifest&url=https://github.com/luisxiaomai/Images/blob/master/Internal-App-Store/anwstream.plist' class="ipa btn btn-primary float-right ml-1 btn-sm">iOS</a>
                 {% endif%} {% if showLink["showAndroidLink"] %}
                 <a href="{{url_for('main.download',projectID=projectSection.id,type='apk')}}" class="android btn btn-primary float-right ml-1 btn-sm">Android</a>
                 {% endif%}
