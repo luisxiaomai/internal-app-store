@@ -15,6 +15,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TEMPLATES_AUTO_RELOAD = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///"+os.path.join(basedir,"data-dev.sqlite")
+    UPLOADED_STORE_DEST = os.path.join(basedir,"app/store")
     
 
 class TestingConfig(Config):

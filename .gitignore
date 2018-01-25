@@ -3,11 +3,8 @@
 # Python:
 *.pyc
 venv
-store/*/*.apk
-store/*/*.ipa
-store/*/*.plist
-store/*.js
-store/*.plist
+app/store/TestApp-master
+
 # My configurations:
 .vscode
 __pycache__

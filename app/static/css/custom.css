@@ -2,12 +2,21 @@
 .title .blockquote-footer{
   margin-left:20%;
 }
-
+.card-body{
+  position: relative;
+}
+.linkSection{
+  position: absolute;
+  right: 20px;
+  bottom:20px;
+}
 .card .app-icon{
   height:100px;
   width:100px;
 }
-
+.card .updateTime{
+  font-size:x-small;
+}
 .admin.container{
   margin-top:100px;
 }

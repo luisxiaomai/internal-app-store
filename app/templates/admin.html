@@ -112,14 +112,24 @@
     <script>
         function check(id) {
             var url = "{{ url_for('main.createProject') }}";
-            $.post(url, data = $('#project').serialize() + "&id=" + id, function (data) {
-                if (data.status == 'ok') {
-                    $('.create.modal').modal('hide');
-                    location.href = "{{ url_for('main.admin') }}";
-                }
-                else {
-                    $('.create.modal').find(".modal-content").html(data);
+            var formData = new FormData($('#project')[0]);
+            formData.append("id",id)
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success:function(data) {    
+                    if (data.status == 'ok') {
+                        $('.create.modal').modal('hide');
+                        location.href = "{{ url_for('main.admin') }}";
+                    }
+                    else {
+                        $('.create.modal').find(".modal-content").html(data);
 
+                    }
                 }
             });
         };

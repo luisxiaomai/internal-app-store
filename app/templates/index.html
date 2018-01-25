@@ -18,22 +18,30 @@
             <h2 class="mt-3">Internal App Store</h2>
             <footer class="blockquote-footer">
                 <cite title="Source Title">Download/Install android and iOS app in your mobile device</cite>
+
             </footer>
+            <a href="{{url_for('main.installCA')}}" class="badge badge-primary">Install CA</a>
+
+
         </blockquote>
         {% for projectSection in projectList %}
         <div class="card text-white bg-dark mb-3">
             <div class="card-header text-center">{{projectSection.name}}-{{projectSection.version}}</div>
             <div class="card-body">
                 <img class="app-icon img-thumbnail rounded float-left mr-3" src="static/images/app-icon.png" alt="Card image cap">
-                <h5 class="card-title">{{projectSection.description}}</h5>
-                <p class="card-text">Last updated time</p>
-                {% if showLink["showIpaLink"] %}
-                <a href="{{url_for('main.download',projectID=projectSection.id,type='ipa')}}" class="iOS btn btn-primary float-right ml-1 btn-sm">ipa</a>
-                {% endif%} {% if showLink["showiOSLink"] %}
-                <a href='itms-services://?action=download-manifest&url=https://github.com/luisxiaomai/Images/blob/master/Internal-App-Store/anwstream.plist' class="ipa btn btn-primary float-right ml-1 btn-sm">iOS</a>
-                {% endif%} {% if showLink["showAndroidLink"] %}
-                <a href="{{url_for('main.download',projectID=projectSection.id,type='apk')}}" class="android btn btn-primary float-right ml-1 btn-sm">Android</a>
-                {% endif%}
+                <p class="card-text updateTime iOS">{% if projectSection.iOSUpdateTime %}iOS last updated time: {{projectSection.iOSUpdateTime}} {% endif %}</p>
+                <p class="card-text updateTime Android">{% if projectSection.androidUpdateTime %}Android last updated time: {{projectSection.androidUpdateTime}} {% endif %}</p>
+                <div class="linkSection">
+                    {% if showLink["showiOSLink"] %}
+                        <a href='itms-services://?action=download-manifest&url={{projectSection.plist_url}}' class="ipa btn btn-primary  ml-1 btn-sm">iOS</a>
+                    {% endif%} 
+                    {% if showLink["showAndroidLink"] %}
+                        <a href="{{url_for('main.download',projectID=projectSection.id,type='apk')}}" class="android btn btn-primary  ml-1 btn-sm">Android</a>
+                    {% endif%}
+                    {% if showLink["showIpaLink"]  %}
+                        <a href="{{url_for('main.download',projectID=projectSection.id,type='ipa')}}" class="iOS btn btn-primary  ml-1 btn-sm">ipa</a>
+                    {% endif%}
+                </div>
 
             </div>
         </div>
@@ -42,6 +50,15 @@
     <script src="static/js/jquery-3.2.1.min.js"></script>
     <script src="static/js/popper.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
+    <script>
+        if (navigator.userAgent.includes("iPhone") || navigator.userAgent.includes("iPad")){
+            $('.updateTime.Android').remove();
+        }
+        else if (navigator.userAgent.includes("Android"))
+        {
+            $('.updateTime.iOS').remove();
+        }
+    </script>
 </body>
 
 </html>

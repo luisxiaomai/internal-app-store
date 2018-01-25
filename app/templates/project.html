@@ -1,7 +1,6 @@
 {% from "utils/_formHelper.html" import render_field with context %}
 
-<form id="project"  method="POST" onsubmit="return false;">
-            
+<form id="project"  method="POST" enctype="multipart/form-data" onsubmit="return false;">            
     <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLongTitle">{% if form.name.data %}Edit {% else %}Create {% endif %}Mobile App Project</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -15,6 +14,7 @@
                 {{render_field(form.description)}} 
                 {{render_field(form.android_jenkins_url)}}
                 {{render_field(form.ios_jenkins_url)}}
+                {{render_field(form.plist,template=True)}}
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button id="createSubmit" class="btn btn-primary" onclick="{% if projectID %}check({{projectID}}){% else %}check(0){% endif %}">Save</button>
