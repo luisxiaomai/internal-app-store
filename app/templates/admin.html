@@ -41,6 +41,9 @@
                             <th>
                                 <em class="fa fa-cog"></em>
                             </th>
+                            <th>
+                                <i class="fas fa-eye"></i>                                    
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
@@ -64,6 +67,9 @@
                                 <a class="sync" data-toggle="tooltip" data-placement="bottom" title="sync">
                                     <i class="far fa-play-circle"></i>
                                 </a>
+                            </td>
+                            <td class="executionSection">
+
                             </td>
                         </tr>
                         {% endfor %}
@@ -190,15 +196,18 @@
                     var url = "{{url_for('main.sync')}}";
                     $.get(url,function(data){
                         if (data.status == 'ok') {
-                            var elem = syncElem.next(".progress").find(".progress-bar");
-                            elem.css("width","100%");
-                            elem.text("done");
+                            var progressEelem = syncElem.parent().next(".executionSection").find(".progress");
+                            progressEelem.remove();
+                            syncElem.parent().next(".executionSection").append('<span class="executionStatus" style="margin-right:5px"><i class="far fa-check-circle"></i></span><a href="#" ><i class="far fa-file-alt"></i></a>')
                         };
 
                     });
+                    if ($(this).parent().next(".executionSection").find(".executionStatus").length){
+                        $(this).parent().next(".executionSection").empty()
+                    }
                     html = '<div class="progress"> <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div></div>'
-                    $(html).insertAfter($(this))
-                    var elem = $(this).next('.progress').find(".progress-bar"); 
+                    $(this).parent().next(".executionSection").append(html);
+                    var progressBarEelem = $(this).parent().next(".executionSection").find(".progress-bar"); 
                     var width = 0;
                     var id = setInterval(frame, 1000);
                     function frame() {
@@ -206,11 +215,12 @@
                             clearInterval(id);
                         } else {
                             width = width + 10; 
-                            elem.css("width",width + '%'); 
+                            progressBarEelem.css("width",width + '%'); 
                         }
                     }
                 });
             });
+               
                
            
 
